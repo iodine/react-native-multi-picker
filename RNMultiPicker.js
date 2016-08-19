@@ -95,6 +95,9 @@ export default class CustomPicker extends Component {
         selections[name] = value;
 
         this.setState({ selections });
+        
+        const {onChange} = this.props;
+        if (onChange) onChange(selections);
     }
 
     renderPickerOptions(options) {
@@ -184,7 +187,6 @@ export default class CustomPicker extends Component {
         return (
             <View style={styles.container}>
                 <View style={[
-                    styles.popup,
                     {
                         width: WIN.width - (2 * this.props.padding), borderWidth: this.props.borderWidth
                     },
@@ -195,26 +197,28 @@ export default class CustomPicker extends Component {
                     <View style={styles.pickerContainer}>
                         {this.renderPickers(this.state.optionLists)}
                     </View>
-                    <View style={styles.buttonContainer}>
-                        <View style={styles.buttonWrapper}>
-                            <TouchableHighlight
-                                style={[styles.button, styles.cancel, this.getOptionalStyle('cancel')]}
-                                onPress={this.props.onCancel}
-                                underlayColor={'lightgray'}
-                            >
-                                <Text allowFontScaling={this.props.allowFontScaling} style={styles.buttonText}>{this.props.cancelText}</Text>
-                            </TouchableHighlight>
+                    {!this.props.hideButtons && 
+                        <View style={styles.buttonContainer}>
+                            <View style={styles.buttonWrapper}>
+                                <TouchableHighlight
+                                    style={[styles.button, styles.cancel, this.getOptionalStyle('cancel')]}
+                                    onPress={this.props.onCancel}
+                                    underlayColor={'lightgray'}
+                                >
+                                    <Text style={styles.buttonText}>{this.props.cancelText}</Text>
+                                </TouchableHighlight>
+                            </View>
+                            <View style={styles.buttonWrapper}>
+                                <TouchableHighlight
+                                    onPress={this.handlePressDone}
+                                    style={[styles.button, styles.done, this.getOptionalStyle('done')]}
+                                    underlayColor={'lightgray'}
+                                >
+                                    <Text style={styles.buttonText}>{this.props.doneText}</Text>
+                                </TouchableHighlight>
+                            </View>
                         </View>
-                        <View style={styles.buttonWrapper}>
-                            <TouchableHighlight
-                                onPress={this.handlePressDone}
-                                style={[styles.button, styles.done, this.getOptionalStyle('done')]}
-                                underlayColor={'lightgray'}
-                            >
-                                <Text allowFontScaling={this.props.allowFontScaling} style={styles.buttonText}>{this.props.doneText}</Text>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
+                    }
                 </View>
             </View>
         );
@@ -286,14 +290,25 @@ CustomPicker.propTypes = {
      *     Border width of the modal
      */
     borderWidth: React.PropTypes.number,
-    allowFontScaling: React.PropTypes.bool
+
+    allowFontScaling: React.PropTypes.bool,
+
+    /**
+        Hide the modal action buttons
+    */
+    hideButtons: React.PropTypes.bool,
+
+    /**
+        Called when the pickers change.
+    */
+    onChange: React.PropTypes.func,
 };
 
 CustomPicker.defaultProps = {
     doneText: 'Done',
     cancelText: 'Cancel',
     padding: 10,
-    borderWidth: 1,
+    borderWidth: 0,
     itemStyle: {},
     style: {},
     allowFontScaling: true
@@ -301,19 +316,8 @@ CustomPicker.defaultProps = {
 
 const styles = StyleSheet.create({
     container: {
-        width: WIN.width,
-        height: WIN.height,
-        position: 'absolute',
-        top: 0,
-        left: 0,
         alignItems: 'center',
-        justifyContent: 'center'
-    },
-    popup: {
-        borderWidth: 1,
-        borderColor: 'lightgray',
-        borderRadius: 5,
-        marginHorizontal: 5
+        justifyContent: 'center',
     },
     pickerContainer: {
         flexDirection: 'row',
