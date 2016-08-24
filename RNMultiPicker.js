@@ -254,12 +254,12 @@ CustomPicker.propTypes = {
      * onDone
      *     Callback function that will be passed the selections object when the user presses done
      */
-    onDone: React.PropTypes.func.isRequired,
+    onDone: React.PropTypes.func,
     /**
      * onCancel
      *     Callback function that will be called when the user presses cancel
      */
-    onCancel: React.PropTypes.func.isRequired,
+    onCancel: React.PropTypes.func,
     /**
      * prompt
      *     Prompt text for the modal
