@@ -143,7 +143,7 @@ export default class CustomPicker extends Component {
                     style={[
                         styles.pickerWrapper,
                         {
-                            width: (WIN.width - (2 * this.props.padding) - (2 * this.props.borderWidth)) / this.state.optionLists.length
+                            width: (this.props.maxWidth - (2 * this.props.padding) - (2 * this.props.borderWidth)) / this.state.optionLists.length
                         }
                     ]}
                 >
@@ -153,7 +153,7 @@ export default class CustomPicker extends Component {
                         selectedValue={this.getSelectedValueFor(optionList)}
                         onValueChange={(value) => this.handleValueChange(value, optionList.name)}
                         prompt={optionList.title ? optionList.title : null}
-                        mode={'dialog'}
+                        mode={this.props.mode}
                         itemStyle={this.props.itemStyle}
                     >
                         {this.renderPickerOptions(optionList.options)}
@@ -190,7 +190,7 @@ export default class CustomPicker extends Component {
             <View style={styles.container}>
                 <View style={[
                     {
-                        width: WIN.width - (2 * this.props.padding), borderWidth: this.props.borderWidth
+                        borderWidth: this.props.borderWidth
                     },
                     this.getOptionalStyle('popup')
                 ]}
@@ -253,6 +253,11 @@ CustomPicker.propTypes = {
         })
     ).isRequired,
     /**
+     * mode
+     *     The Picker mode: dialog or dropdown.
+     */
+    mode: React.PropTypes.string,
+    /**
      * onDone
      *     Callback function that will be passed the selections object when the user presses done
      */
@@ -292,6 +297,11 @@ CustomPicker.propTypes = {
      *     Border width of the modal
      */
     borderWidth: React.PropTypes.number,
+    /**
+     * maxWidth
+     *     The max width of the enclosing dialog, used to size the Pickers.
+     */
+    maxWidth: React.PropTypes.number,
 
     allowFontScaling: React.PropTypes.bool,
 
@@ -313,7 +323,9 @@ CustomPicker.defaultProps = {
     borderWidth: 0,
     itemStyle: {},
     style: {},
-    allowFontScaling: true
+    allowFontScaling: true,
+    mode: 'dialog',
+    maxWidth: WIN.width,
 };
 
 const styles = StyleSheet.create({
